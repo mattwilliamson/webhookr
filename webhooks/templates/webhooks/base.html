@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="{% block "angular-app" %}webhook{% endblock %}">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="{% static "ico/favicon.png" %}">
+
+    <title>Webhookr.com</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" />
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{% static "css/style.css" %}" />
+
+    {% block "css" %}
+    {% endblock %}
+
+    {% block "scripts" %}
+
+      {% load socketio_tags %}
+      {% socketio %}
+
+      <script type="text/javascript" language="javascript" src="{% static "js/highlight.pack.js" %}"></script>
+      <script>var webhook_id = "{{ webhook_id }}";</script>
+      <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+      <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.min.js"></script>
+      <script type="text/javascript" language="javascript" src="{% static "js/webhook-app.js" %}"></script>
+      <script type="text/javascript" language="javascript" src="{% static "js/socket-io.js" %}"></script>
+
+    {% endblock %}
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="{% static "js/html5shiv.js" %}"></script>
+      <script src="{% static "js/respond.min.js" %}"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Webhookr</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="{% url 'new' %}">New Webhookr</a></li>
+            <li><a href="https://github.com/mattwilliamson">Contact</a></li>
+          </ul>
+        </div><!-- /.nav-collapse -->
+      </div><!-- /.container -->
+    </div><!-- /.navbar -->
+
+    <div class="container">
+
+      <div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-xs-10 col-sm-8">
+          {% block "content-left" %}
+
+          {% endblock %}
+        </div><!--/span-->
+
+        <div class="col-xs-6 col-sm-4 sidebar-offcanvas" id="sidebar" role="navigation" ng-controller="WebhookListCtrl">
+          <h3 class="title">Recent Webhookrs <span class="badge">{% templatetag openvariable %}recentWebhooks.length{% templatetag closevariable %}</span></h3>
+          <div class="sidebar-nav">
+
+            <div class="recent-webhook well" ng-show="!recentWebhooks.length">
+                <p>
+                    No webhooks yet, <a href="{% url 'new' %}">start a new one</a>!
+                </p>
+            </div>
+
+            <div class="recent-webhook well" ng-repeat="webhook in recentWebhooks">
+                <p>
+                  <small><a href="/{% templatetag openvariable %}webhook.id{% templatetag closevariable %}">{% templatetag openvariable %}webhook.id{% templatetag closevariable %}</a></small>
+                </p>
+                <p>Created at: {% templatetag openvariable %}webhook.date{% templatetag closevariable %}</p>
+            </div> <!--/.webhook-->
+          </div><!--/.well -->
+          <div class="pull-right">
+            <a href="{% url 'new' %}" class="btn btn-primary">New Webhook</a>
+            <button type="button" class="btn btn-danger" ng-click="clearRecent()">Clear All</button>
+          </div>
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Matt Williamson 2013</p>
+      </footer>
+
+    </div><!--/.container-->
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <script src="{% static "js/jquery.js" %}"></script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+  </body>
+</html>
