@@ -10,7 +10,7 @@ ADD etc_init_webhookr.conf /etc/init/webhookr.conf
 
 RUN apt-get update -y
 RUN apt-get upgrade -y
-RUN apt-get install python-setuptools -y
+RUN apt-get install python-setuptools python-gevent -y
 RUN easy_install pip
 RUN pip install -r /usr/local/webhookr/REQUIREMENTS.txt
 
