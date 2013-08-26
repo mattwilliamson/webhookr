@@ -12,4 +12,4 @@ RUN pip install -r /usr/local/webhookr/REQUIREMENTS.txt
 
 EXPOSE 9000
 
-CMD ["/usr/bin/python", "/usr/local/webhookr/manage.py", "runserver_socketio"]
+CMD ["/usr/bin/python", "/usr/local/webhookr/manage.py", "runserver_socketio", "0.0.0.0:9000"]
