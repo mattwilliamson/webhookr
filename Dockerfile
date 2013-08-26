@@ -10,7 +10,7 @@ ADD etc_init_webhookr.conf /etc/init/webhookr.conf
 
 RUN apt-get update -y
 RUN apt-get upgrade -y
-RUN apt-get install python-setuptools python-gevent -y
+RUN apt-get install python-setuptools libevent-dev python-all-dev build-essential -y
 RUN easy_install pip
 RUN pip install -r /usr/local/webhookr/REQUIREMENTS.txt
 
@@ -18,4 +18,3 @@ RUN restart webhookr
 
 EXPOSE 9000
 
-CMD ["/usr/lib/btsync/btsync-daemon", "--nodaemon", "--config", "/etc/btsync/btsync.conf"]
