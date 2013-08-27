@@ -1,10 +1,10 @@
 var app = angular.module('webhook', ['ngCookies']);
 
-function WebhookListCtrl($scope, $cookies, $timeout) {
+app.controller('WebhookListCtrl', ['$scope', '$cookies', function($scope, $cookies) {
     $scope.recentWebhooks = {};
 
-    if(typeof $cookies[webhook_id] == "undefined") {
-        $cookies[webhook_id] = new Date().toLocaleString();
+    if(typeof $cookies[window.webhookId] == "undefined") {
+        $cookies[window.webhookId] = new Date().toLocaleString();
     }
 
     console.log($cookies);
@@ -39,39 +39,49 @@ function WebhookListCtrl($scope, $cookies, $timeout) {
             }
         }
     }
-}
+}]);
 
-function RequestListCtrl($scope, socket) {
+app.controller('RequestListCtrl', ['$scope', function($scope) {
     $scope.requests = [];
 
-  // Socket listeners
-  // ================
+    var socket = io.connect('/webhooks');
 
     socket.on('connect', function(){
-        socket.subscribe(webhook_id);
+        socket.emit('join', window.webhookId);
     });
 
-    function playSoundEffect() {
+    socket.on('reconnect', function () {
+        console.info('Reconnected to the server');
+    });
+
+    socket.on('reconnecting', function () {
+        console.info('Attempting to re-connect to the server');
+    });
+
+    socket.on('error', function (e) {
+        console.error(e ? e : 'A unknown error occurred');
+    });
+
+    socket.on('new_request', function(message) {
+        message.date = new Date();
+        message.dateNumber = Number(message.date);
+        message.hasInfo = false;
+        message.hasHeaders = false;
+        message.hasPost = message.post != 'null' && message.post != '';
+        message.hasGet = message.get != 'null' && message.get != '';
+        $scope.requests.push(message);
+        console.log('new_request');
+        console.log(message);
+        console.log($scope.requests);
+        $scope.playSoundEffect();
+    });
+
+    $scope.playSoundEffect = function () {
         // TODO: There's got to be a more angular way to do a singleton and reference an element
         // Probably a factory or maybe a directive
         document.getElementById('audio-event').play();
     }
-
-    socket.on('message', function(message) {
-        if(message.action == 'request:new') {
-            message.date = new Date();
-            message.dateNumber = Number(message.date);
-            message.hasInfo = false;
-            message.hasHeaders = false;
-            message.hasPost = message.post != 'null' && message.post != '';
-            message.hasGet = message.get != 'null' && message.get != '';
-            $scope.requests.push(message);
-            playSoundEffect();
-        }
-    });
-
-    socket.connect();
-}
+}]);
 
 app.directive('snippet', ['$timeout', '$interpolate', function($timeout, $interpolate) {
     return {
@@ -89,7 +99,9 @@ app.directive('snippet', ['$timeout', '$interpolate', function($timeout, $interp
 }]);
 
 app.filter('reverse', function() {
+    console.log('reverse');
     return function(items) {
+        console.log('reverse inner');
         return items.slice().reverse();
     };
 });
