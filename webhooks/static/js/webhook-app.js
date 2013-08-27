@@ -1,13 +1,11 @@
 var app = angular.module('webhook', ['ngCookies']);
 
-app.controller('WebhookListCtrl', ['$scope', '$cookies', function($scope, $cookies) {
+function WebhookListCtrl($scope, $cookies, $timeout) {
     $scope.recentWebhooks = {};
 
     if(typeof $cookies[window.webhookId] == "undefined") {
         $cookies[window.webhookId] = new Date().toLocaleString();
     }
-
-    console.log($cookies);
 
     $scope.$watch(function() {
         var hash = 0;
@@ -39,12 +37,10 @@ app.controller('WebhookListCtrl', ['$scope', '$cookies', function($scope, $cooki
             }
         }
     }
-}]);
+}
 
-app.controller('RequestListCtrl', ['$scope', function($scope) {
+function RequestListCtrl($scope, socket) {
     $scope.requests = [];
-
-    var socket = io.connect('/webhooks');
 
     socket.on('connect', function(){
         socket.emit('join', window.webhookId);
@@ -70,9 +66,6 @@ app.controller('RequestListCtrl', ['$scope', function($scope) {
         message.hasPost = message.post != 'null' && message.post != '';
         message.hasGet = message.get != 'null' && message.get != '';
         $scope.requests.push(message);
-        console.log('new_request');
-        console.log(message);
-        console.log($scope.requests);
         $scope.playSoundEffect();
     });
 
@@ -81,7 +74,7 @@ app.controller('RequestListCtrl', ['$scope', function($scope) {
         // Probably a factory or maybe a directive
         document.getElementById('audio-event').play();
     }
-}]);
+}
 
 app.directive('snippet', ['$timeout', '$interpolate', function($timeout, $interpolate) {
     return {
@@ -99,9 +92,7 @@ app.directive('snippet', ['$timeout', '$interpolate', function($timeout, $interp
 }]);
 
 app.filter('reverse', function() {
-    console.log('reverse');
     return function(items) {
-        console.log('reverse inner');
         return items.slice().reverse();
     };
 });

@@ -22,14 +22,15 @@
     {% block "scripts" %}
 
       <script type="text/javascript" language="javascript" src="{% static "js/highlight.pack.js" %}"></script>
-      <script>
-          window.webhookId = "{{ webhook_id }}";
-          var WEB_SOCKET_SWF_LOCATION="{{ STATIC_URL }}flashsocket/WebSocketMain.swf";
-      </script>
-        <script type="text/javascript" language="javascript" src="{% static "js/socket.io.js" %}"></script>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.min.js"></script>
-      <script type="text/javascript" language="javascript" src="{% static "js/webhook-app.js" %}"></script>
+        <script type="text/javascript" language="javascript" src="{% static "js/socket.io.js" %}"></script>
+        <script>
+        window.webhookId = "{{ webhook_id }}";
+        var WEB_SOCKET_SWF_LOCATION="{{ STATIC_URL }}flashsocket/WebSocketMain.swf";
+        </script>
+        <script type="text/javascript" language="javascript" src="{% static "js/webhook-app.js" %}"></script>
+        <script type="text/javascript" language="javascript" src="{% static "js/angular-socketio.js" %}"></script>
 
     {% endblock %}
 
