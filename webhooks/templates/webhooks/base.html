@@ -55,7 +55,22 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
-            <li><a href="{% url 'new' %}">New Webhookr</a></li>
+            <li><a href="{% url 'new' %}">New Webhook</a></li>
+
+            <li class="dropdown" ng-controller="WebhookListCtrl">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Recent Webhooks <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'new' %}"><span class="glyphicon glyphicon-plus-sign"></span> Add New Webhook</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li ng-show="!recentWebhooks.length"><span class="glyphicon glyphicon-warning-sign"></span> No webhooks added yet</li>
+                    <li ng-repeat="webhook in recentWebhooks">
+                        <a href="/{% templatetag openvariable %}webhook.id{% templatetag closevariable %}">{% templatetag openvariable %}webhook.date{% templatetag closevariable %}</a>
+                    </li>
+                    <li role="presentation" class="divider" ng-show="recentWebhooks.length"></li>
+                    <li ng-show="recentWebhooks.length"><a href="#" ng-click="clearRecent()"><span class="glyphicon glyphicon-remove-sign"></span> Clear All</a></li>
+                </ul>
+            </li>
+
             <li><a href="https://github.com/mattwilliamson">Contact</a></li>
           </ul>
         </div><!-- /.nav-collapse -->
@@ -65,35 +80,11 @@
     <div class="container">
 
       <div class="row row-offcanvas row-offcanvas-right">
-        <div class="col-xs-10 col-sm-8">
+        <div class="col-xs-12 col-sm-12">
           {% block "content-left" %}
 
           {% endblock %}
         </div><!--/span-->
-
-        <div class="col-xs-6 col-sm-4 sidebar-offcanvas" id="sidebar" role="navigation" ng-controller="WebhookListCtrl">
-          <h3 class="title">Recent Webhookrs <span class="badge">{% templatetag openvariable %}recentWebhooks.length{% templatetag closevariable %}</span></h3>
-          <div class="sidebar-nav">
-
-            <div class="recent-webhook well" ng-show="!recentWebhooks.length">
-                <p>
-                    No webhooks yet, <a href="{% url 'new' %}">start a new one</a>!
-                </p>
-            </div>
-
-            <div class="recent-webhook well" ng-repeat="webhook in recentWebhooks">
-                <p>
-                  <small><a href="/{% templatetag openvariable %}webhook.id{% templatetag closevariable %}">{% templatetag openvariable %}webhook.id{% templatetag closevariable %}</a></small>
-                </p>
-                <p>Created at: {% templatetag openvariable %}webhook.date{% templatetag closevariable %}</p>
-            </div> <!--/.webhook-->
-          </div><!--/.well -->
-          <div class="pull-right">
-            <a href="{% url 'new' %}" class="btn btn-primary">New Webhook</a>
-            <button type="button" class="btn btn-danger" ng-click="clearRecent()">Clear All</button>
-          </div>
-        </div><!--/span-->
-      </div><!--/row-->
 
       <hr>
 
