@@ -11,6 +11,6 @@ RUN easy_install pip
 RUN pip install -r /usr/local/webhookr/REQUIREMENTS.txt
 
 EXPOSE 5000
-EXPOSE 843
+EXPOSE 10843
 
-CMD ["/usr/bin/python", "/usr/local/webhookr/manage.py", "runserver_socketio", "0.0.0.0:9000"]
+CMD ["/usr/bin/python", "/usr/local/webhookr/webhookr/run.py"]
