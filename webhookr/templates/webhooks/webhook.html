@@ -52,8 +52,11 @@
           </strong>
             <span class="date-text">@ {{request.date.toLocaleString()}}</span>
         </div>
-        <em class="pull-right">{{request.path}}</em>
-        <button class="btn btn-warning glyphicon glyphicon-remove-circle pull-right" ng-click="removeRequest($index)"></button>
+        <span class="pull-right">
+            <em>{{request.path}}</em>
+            <button class="btn btn-warning glyphicon glyphicon-remove-circle" ng-click="removeRequest($index)"> </button>
+        </span>
+
         <div class="clearfix"></div>
       </div>
 
