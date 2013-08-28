@@ -83,6 +83,11 @@ function RequestListCtrl($scope, socket) {
 }
 
 app.directive('snippet', ['$timeout', '$interpolate', function($timeout, $interpolate) {
+    function replaceURLWithHTMLLinks(text) {
+        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        return text.replace(exp, '<a href="$1" target="_blank">$1</a>');
+    }
+
     return {
         restrict: 'E',
         template:'<pre><code class="prettyprint" ng-transclude></code></pre>',
@@ -91,7 +96,7 @@ app.directive('snippet', ['$timeout', '$interpolate', function($timeout, $interp
         link:function(scope, elm, attrs){             
             var tmp =  $interpolate(elm.find('code').text())(scope);
              $timeout(function() {                
-                elm.find('code').html(hljs.highlightAuto(tmp).value);
+                elm.find('code').html(replaceURLWithHTMLLinks(hljs.highlightAuto(tmp).value));
               }, 0);
         }
     };
