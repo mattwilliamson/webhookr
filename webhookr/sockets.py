@@ -2,10 +2,8 @@ import logging
 
 from socketio.namespace import BaseNamespace
 from socketio.mixins import RoomsMixin, BroadcastMixin
-from webhooks.sdjango import namespace
 
 
-@namespace('/webhooks')
 class WebhookNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     def initialize(self):
         self.logger = logging.getLogger("socketio.webhook")

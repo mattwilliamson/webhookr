@@ -1,11 +1,11 @@
 {% extends "webhooks/base.html" %}
 
-{% block "content-left" %}
+{% block content_left %}
   <div class="jumbotron">
     <h1>What is Webhookr?</h1>
     
     <p>
-    Quickly test webhook callbacks. Start a <a href="{% url 'new' %}">new Webhookr</a> and begin receiving seeing HTTP requests right here in your browser. Data is not retained, so refreshing will clear out a Webhookr.
+    Quickly test webhook callbacks. Start a <a href="{{ url_for('new') }}">new Webhookr</a> and begin receiving seeing HTTP requests right here in your browser. Data is not retained, so refreshing will clear out a Webhookr.
     </p>
 
     <p>

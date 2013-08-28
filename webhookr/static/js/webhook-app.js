@@ -65,7 +65,9 @@ function RequestListCtrl($scope, socket) {
         message.hasHeaders = false;
         message.hasPost = message.post != 'null' && message.post != '';
         message.hasGet = message.get != 'null' && message.get != '';
+        message.hasFiles = message.files != 'null' && message.files != '';
         $scope.requests.push(message);
+
         $scope.playSoundEffect();
     });
 
@@ -73,6 +75,10 @@ function RequestListCtrl($scope, socket) {
         // TODO: There's got to be a more angular way to do a singleton and reference an element
         // Probably a factory or maybe a directive
         document.getElementById('audio-event').play();
+    }
+
+    $scope.removeRequest = function(index){
+        $scope.requests.splice(index, 1);
     }
 }
 

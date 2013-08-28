@@ -10,7 +10,7 @@ RUN apt-get install python-setuptools libevent-dev python-all-dev build-essentia
 RUN easy_install pip
 RUN pip install -r /usr/local/webhookr/REQUIREMENTS.txt
 
-EXPOSE 9000
+EXPOSE 5000
 EXPOSE 843
 
 CMD ["/usr/bin/python", "/usr/local/webhookr/manage.py", "runserver_socketio", "0.0.0.0:9000"]
