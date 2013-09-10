@@ -1,10 +1,10 @@
-var app = angular.module('webhook', ['ngCookies']);
 
-function WebhookListCtrl($scope, $cookies, $timeout) {
+
+function WebhookListCtrl($scope, webhookId, $cookies, $timeout) {
     $scope.recentWebhooks = {};
 
-    if(typeof $cookies[window.webhookId] == "undefined") {
-        $cookies[window.webhookId] = new Date().toLocaleString();
+    if(typeof $cookies[webhookId] == "undefined") {
+        $cookies['wh-' + webhookId] = new Date().toLocaleString();
     }
 
     $scope.$watch(function() {
@@ -16,11 +16,12 @@ function WebhookListCtrl($scope, $cookies, $timeout) {
         return hash;
     }, function() {
         $scope.recentWebhooks = [];
-        for (var webookId in $cookies) {
-            if(webookId.match(/[\S-]{36}/g)) {
+        for (var webhookId in $cookies) {
+            var webhookIdMatch = webhookId.match(/wh-(\w+)/);
+            if(webhookIdMatch) {
                 var webHook = {
-                    id: webookId,
-                    date: $cookies[webookId]
+                    id: webhookIdMatch[1],
+                    date: $cookies[webhookIdMatch[0]]
                 };
                 $scope.recentWebhooks.push(webHook);
             }
@@ -31,19 +32,49 @@ function WebhookListCtrl($scope, $cookies, $timeout) {
     });
 
     $scope.clearRecent = function(){
-        for (var webookId in $cookies) {
-            if(webookId.match(/[\S-]{36}/g)) {
-                delete $cookies[webookId];
+        for (var webhookId in $cookies) {
+            var webhookIdMatch = webhookId.match(/wh-(\w+)/);
+            if(webhookIdMatch) {
+                delete $cookies[webhookIdMatch[0]];
             }
         }
     }
 }
 
-function RequestListCtrl($scope, socket) {
+function RequestListCtrl($scope, webhookId, staticUrl, socket) {
     $scope.requests = [];
+    $scope.totalSubscribers = 0;
+    $scope.enableSounds = true;
+
+    $scope.supportsAudioCodec = function(codec) {
+        var a = document.createElement('audio');
+        return !!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''));
+    }
+
+    $scope.audioTagForUrl = function(audioUrl, preload){
+        var a = document.createElement('audio');
+        a.preload = typeof preload == 'undefined' ? false: preload;
+
+        if($scope.supportsAudioCodec('audio/ogg')) {
+            a.src = audioUrl + '.ogg';
+        } else if($scope.supportsAudioCodec('audio/mpeg')) {
+            a.src = audioUrl;
+        }
+
+        return a;
+    };
+
+    var effectsPath = staticUrl + 'audio/effect/';
+    $scope.soundEffects = {
+        normal: $scope.audioTagForUrl(effectsPath + 'normal.mp3', true),
+        quiet: $scope.audioTagForUrl(effectsPath + 'quiet.mp3'),
+        medium: $scope.audioTagForUrl(effectsPath + 'medium.mp3'),
+        loud: $scope.audioTagForUrl(effectsPath + 'loud.mp3'),
+        error: $scope.audioTagForUrl(effectsPath + 'error.mp3')
+    };
 
     socket.on('connect', function(){
-        socket.emit('join', window.webhookId);
+        socket.emit('join', webhookId);
     });
 
     socket.on('reconnect', function () {
@@ -68,19 +99,24 @@ function RequestListCtrl($scope, socket) {
         message.hasFiles = message.files != 'null' && message.files != '';
         $scope.requests.push(message);
 
-        $scope.playSoundEffect();
+        $scope.playSoundEffect(message.soundEffect);
     });
 
-    $scope.playSoundEffect = function () {
-        // TODO: There's got to be a more angular way to do a singleton and reference an element
-        // Probably a factory or maybe a directive
-        document.getElementById('audio-event').play();
+    socket.on('subscriber_joined', function(message){
+        $scope.totalSubscribers = message.totalSubscribers;
+    });
+
+    $scope.playSoundEffect = function(soundEffect) {
+        if($scope.enableSounds) {
+            $scope.soundEffects[soundEffect].play();
+        }
     }
 
     $scope.removeRequest = function(index){
         $scope.requests.splice(index, 1);
     }
 }
+
 
 app.directive('snippet', ['$timeout', '$interpolate', function($timeout, $interpolate) {
     function replaceURLWithHTMLLinks(text) {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="{% block angular_app %}webhook{% endblock %}">
+<html lang="en" xmlns:ng="http://angularjs.org" ng-app="{% block angular_app %}webhook{% endblock %}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="{{ url_for('static', filename='ico/favicon.png') }}">
 
-    <title>Webhookr.com</title>
+    <title>{% block title_prefix %}{% endblock %}Webhookr</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
@@ -25,7 +25,9 @@
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.min.js"></script>
         <script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
         <script>
-        window.webhookId = "{{ webhook_id }}";
+        var app = angular.module('webhook', ['ngCookies'])
+                .value("webhookId", "{{ webhook_id }}")
+                .value("staticUrl", "{{ url_for('static', filename='') }}");
         var WEB_SOCKET_SWF_LOCATION="{{ STATIC_URL }}flashsocket/WebSocketMain.swf";
         </script>
         <script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/webhook-app.js') }}"></script>
@@ -41,6 +43,9 @@
   </head>
 
   <body>
+    {% block prenav %}
+    {% endblock %}
+
     <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -53,8 +58,17 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="{{ url_for('new') }}">New Webhook</a></li>
+
+
+            <!-- Navigation Elements -->
+
+            <li class="{%  if request.endpoint == "home" %}active{% endif %}">
+                <a href="{{ url_for('home') }}">Home</a>
+            </li>
+            <li>
+                <a href="{{ url_for('new') }}">New Webhook</a>
+            </li>
+
 
             <li class="dropdown" ng-controller="WebhookListCtrl">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Recent Webhooks <b class="caret"></b></a>
@@ -63,14 +77,22 @@
                     <li role="presentation" class="divider"></li>
                     <li ng-show="!recentWebhooks.length"><span class="glyphicon glyphicon-warning-sign"></span> No webhooks added yet</li>
                     <li ng-repeat="webhook in recentWebhooks">
-                        <a href="/{{ '{{' }}webhook.id{{ '}}' }}">{{ '{{' }}webhook.date{{ '}}' }}</a>
+                        <a href="/{{ '{{' }}webhook.id{{ '}}' }}"><strong>{{ '{{' }}webhook.id{{ '}}' }}</strong> @ {{ '{{' }}webhook.date{{ '}}' }}</a>
                     </li>
                     <li role="presentation" class="divider" ng-show="recentWebhooks.length"></li>
                     <li ng-show="recentWebhooks.length"><a href="#" ng-click="clearRecent()"><span class="glyphicon glyphicon-remove-sign"></span> Clear All</a></li>
                 </ul>
             </li>
 
+            <li class="{%  if request.endpoint == "help" %}active{% endif %}">
+                <a href="{{ url_for('help') }}">Help</a>
+            </li>
+
             <li><a href="https://github.com/mattwilliamson" target="_blank">Contact</a></li>
+
+            <!-- /Navigation Elements -->
+
+
           </ul>
         </div><!-- /.nav-collapse -->
       </div><!-- /.container -->

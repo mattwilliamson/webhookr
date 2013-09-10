@@ -9,10 +9,23 @@
 {% block content_left %}
 
 <div id="request-container" ng-controller="RequestListCtrl">
-  <audio id="audio-event" src="{{ url_for('static', filename='audio/LaserFire.wav') }}" preload="auto"></audio>
+
   <div class="page-header">
     <h1>Live HTTP Requests to this URL</h1>
-    <a href="{{ full_path }}">{{ full_path }}</a> <span class="badge">{{ '{{' }}requests.length{{ '}}' }}</span>
+    <p>
+        <a href="{{ full_path }}">{{ full_path }}</a>
+    </p>
+    <p>
+        <span class="glyphicon glyphicon-indent-left"> </span>
+        Requests: <span class="badge">{{ '{{' }}requests.length{{ '}}' }}</span>
+    </p>
+    <p>
+        <span class="glyphicon glyphicon-user"> </span>
+        Total viewers: <span class="badge">{{ '{{' }}totalSubscribers{{ '}}' }}</span>
+    </p>
+    <p>
+        Sounds enabled: <input type="checkbox" ng-model="enableSounds">
+    </p>
   </div>
 
   <div class="request-list">
@@ -41,7 +54,7 @@
 {% raw %}
 
 
-    <div class="request panel panel-default" ng-repeat="request in requests" ng-animate="'new-request'">
+    <div class="request panel panel-default" ng-repeat="request in requests" ng-animate="'new-request'" ng-cloak>
 
       <div class="panel-heading">
         <div class="date panel-title pull-left">
@@ -105,6 +118,13 @@
           <snippet class="toggle-{{request.hasFiles}}">
 {{request.files}}
           </snippet>
+        </div>
+
+        <!-- New User Watching -->
+        <div ng-show="{{!request.hasData}}">
+            <p>
+                <strong class="text-success">New Subscriber watching this Webhook!</strong>
+            </p>
         </div>
 
       </div>

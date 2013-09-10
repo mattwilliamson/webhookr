@@ -14,6 +14,6 @@ def scalar_or_list(potential_list):
     return potential_list
 
 
-def nice_dict(request_item):
+def formatted_json(request_item):
     new_dict = {k: scalar_or_list(v) for k, v in request_item.iteritems()}
     return json.dumps(new_dict or None, indent=4, separators=(',', ': '))
