@@ -1,50 +1,46 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:ng="http://angularjs.org" ng-app="{% block angular_app %}webhook{% endblock %}">
+{{define "base"}}<!DOCTYPE html>
+<html lang="en" xmlns:ng="http://angularjs.org" ng-app="webhook">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='ico/favicon.png') }}">
+    <link rel="shortcut icon" href="{{.STATIC_URL}}/ico/favicon.png' }}">
 
-    <title>{% block title_prefix %}{% endblock %}Webhookr</title>
+    <title>{{.Title}}Webhookr</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{.STATIC_URL}}/css/bootstrap.min.css" />
 
     <!-- Custom styles for this template -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{.STATIC_URL}}/css/style.css" />
 
-    {% block css %}
-    {% endblock %}
+    {{template "css" .}}
 
-    {% block scripts %}
-
-      <script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/highlight.pack.js') }}"></script>
+      <script type="text/javascript" language="javascript" src="{{.STATIC_URL}}/js/highlight.pack.js"></script>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.min.js"></script>
-        <script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+        <script type="text/javascript" language="javascript" src="{{.STATIC_URL}}/js/socket.io.js"></script>
         <script>
         var app = angular.module('webhook', ['ngCookies'])
-                .value("webhookId", "{{ webhook_id }}")
-                .value("staticUrl", "{{ url_for('static', filename='') }}");
-        var WEB_SOCKET_SWF_LOCATION="{{ STATIC_URL }}flashsocket/WebSocketMain.swf";
+                .value("webhookId", "{{.ID}}")
+                .value("staticUrl", "{{.STATIC_URL}}");
         </script>
-        <script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/webhook-app.js') }}"></script>
-        <script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/angular-socketio.js') }}"></script>
+        <script type="text/javascript" language="javascript" src="{{.STATIC_URL}}/js/webhook-app.js"></script>
+        <script type="text/javascript" language="javascript" src="{{.STATIC_URL}}/js/angular-socketio.js"></script>
 
-    {% endblock %}
+
+    {{template "scripts" .}}
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-      <script src="{{ url_for('static', filename='js/html5shiv.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>
+      <script src="{{.STATIC_URL}}/js/html5shiv.js"></script>
+      <script src="{{.STATIC_URL}}/js/respond.min.js"></script>
     <![endif]-->
   </head>
 
   <body>
-    {% block prenav %}
-    {% endblock %}
+    {{template "prenav" .}}
 
     <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
       <div class="container">
@@ -62,30 +58,30 @@
 
             <!-- Navigation Elements -->
 
-            <li class="{%  if request.endpoint == "home" %}active{% endif %}">
-                <a href="{{ url_for('home') }}">Home</a>
+            <li class="{{.nav_home_class}}">
+                <a href="/home">Home</a>
             </li>
             <li>
-                <a href="{{ url_for('new') }}">New Webhook</a>
+                <a href="/new">New Webhook</a>
             </li>
 
 
             <li class="dropdown" ng-controller="WebhookListCtrl">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Recent Webhooks <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li><a href="{{ url_for('new') }}"><span class="glyphicon glyphicon-plus-sign"></span> Add New Webhook</a></li>
+                    <li><a href="/new"><span class="glyphicon glyphicon-plus-sign"></span> Add New Webhook</a></li>
                     <li role="presentation" class="divider"></li>
                     <li ng-show="!recentWebhooks.length"><span class="glyphicon glyphicon-warning-sign"></span> No webhooks added yet</li>
                     <li ng-repeat="webhook in recentWebhooks">
-                        <a href="/{{ '{{' }}webhook.id{{ '}}' }}"><strong>{{ '{{' }}webhook.id{{ '}}' }}</strong> @ {{ '{{' }}webhook.date{{ '}}' }}</a>
+                        <a href="/{{`"{{"`}}webhook.id{{`"}}"`}}"><strong>{{`"{{"`}}webhook.id{{`"}}"`}}</strong> @ {{`"{{"`}}webhook.date{{`"}}"`}}</a>
                     </li>
                     <li role="presentation" class="divider" ng-show="recentWebhooks.length"></li>
                     <li ng-show="recentWebhooks.length"><a href="#" ng-click="clearRecent()"><span class="glyphicon glyphicon-remove-sign"></span> Clear All</a></li>
                 </ul>
             </li>
 
-            <li class="{%  if request.endpoint == "help" %}active{% endif %}">
-                <a href="{{ url_for('help') }}">Help</a>
+            <li class="{{.nav_help_class}}">
+                <a href="/help">Help</a>
             </li>
 
             <li><a href="https://github.com/mattwilliamson" target="_blank">Contact</a></li>
@@ -102,9 +98,7 @@
 
       <div class="row row-offcanvas row-offcanvas-right">
         <div class="col-xs-12 col-sm-12">
-          {% block content_left %}
-
-          {% endblock %}
+          {{template "content_left" .}}
         </div><!--/span-->
       </div>
 
@@ -122,7 +116,8 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
 
-    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{.STATIC_URL}}/js/jquery.js"></script>
+    <script src="{{.STATIC_URL}}/js/bootstrap.min.js"></script>
   </body>
 </html>
+{{end}}

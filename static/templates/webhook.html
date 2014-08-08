@@ -1,27 +1,31 @@
-{% extends "webhooks/base.html" %}
+{{define "scripts"}}{{end}}
 
-{% block css %}
+
+{{define "prenav"}}{{end}}
+
+
+{{define "css"}}
 <link rel="stylesheet" href="//yandex.st/highlightjs/7.3/styles/solarized_dark.min.css" media="screen" type="text/css" />
-{% endblock %}
+{{end}}
 
 
 
-{% block content_left %}
+{{define "content_left"}}
 
 <div id="request-container" ng-controller="RequestListCtrl">
 
   <div class="page-header">
     <h1>Live HTTP Requests to this URL</h1>
     <p>
-        <a href="{{ full_path }}">{{ full_path }}</a>
+        <a href="{{.Path}}">{{.Path}}</a>
     </p>
     <p>
         <span class="glyphicon glyphicon-indent-left"> </span>
-        Requests: <span class="badge">{{ '{{' }}requests.length{{ '}}' }}</span>
+        Requests: <span class="badge">{{`"{{"`}}requests.length{{`"}}"`}}</span>
     </p>
     <p>
         <span class="glyphicon glyphicon-user"> </span>
-        Total viewers: <span class="badge">{{ '{{' }}totalSubscribers{{ '}}' }}</span>
+        Total viewers: <span class="badge">{{`"{{"`}}totalSubscribers{{`"}}"`}}</span>
     </p>
     <p>
         Sounds enabled: <input type="checkbox" ng-model="enableSounds">
@@ -36,10 +40,10 @@
         <strong>No requests yet! </strong>
         </p>
         <p>
-        <span class="btn btn-default">POST</span> or <span class="btn btn-default">GET</span> with params to <a href="{{ full_path }}">{{ full_path }}</a> to have them show up here, live. No need to refresh.
+        <span class="btn btn-default">POST</span> or <span class="btn btn-default">GET</span> with params to <a href="{{.Path}}">{{.Path}}</a> to have them show up here, live. No need to refresh.
         </p>
         <p>
-          As an example, open <a href="?param=foo&amp;param2=bar" target="_blank">this link</a> in a new tab and see the <span class="btn btn-default">GET</span> data show up below.
+          As an example, open <a href="?param=foo&amp;param2=bar" target="_blank">{{.Path}}?param=foo&amp;param2=bar</a> in a new tab and see the <span class="btn btn-default">GET</span> data show up below.
 
         </p>
       </span>
@@ -51,22 +55,21 @@
 
 
 
-{% raw %}
 
 
     <div class="request panel panel-default" ng-repeat="request in requests" ng-animate="'new-request'" ng-cloak>
 
       <div class="panel-heading">
         <div class="date panel-title pull-left">
-          <span class="btn btn-success">{{request.method}}</span>
+        <span class="btn btn-success">{{`"{{"`}}request.method{{`"}}"`}}</span>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <strong class="time-elapsed">
-            <span time-since="{{request.date}}"></span> ago
+            <span time-since="{{`"{{"`}}request.date{{`"}}"`}}"></span> ago
           </strong>
-            <span class="date-text">@ {{request.date.toLocaleString()}}</span>
+            <span class="date-text">@ {{`"{{"`}}request.date.toLocaleString(){{`"}}"`}}</span>
         </div>
         <span class="pull-right">
-            <em>{{request.path}}</em>
+            <em>{{`"{{"`}}request.path{{`"}}"`}}</em>
             <button class="btn btn-danger glyphicon glyphicon-remove-circle" ng-click="removeRequest($index)"> </button>
         </span>
 
@@ -82,46 +85,46 @@
             Headers
             <input type="checkbox" ng-model="request.hasHeaders">
           </div>
-          <snippet class="toggle-{{request.hasHeaders}}">
-{{request.headers}}
+          <snippet class="toggle-{{`"{{"`}}request.hasHeaders{{`"}}"`}}">
+{{`"{{"`}}request.headers{{`"}}"`}}
           </snippet>
         </div>
 
         <!-- GET -->
-        <div ng-show="{{request.hasGet}}">
+        <div ng-show="{{`"{{"`}}request.hasGet{{`"}}"`}}">
           <div class="method get glyphicon glyphicon-cloud-download">
             GET
             <input type="checkbox" ng-model="request.hasGet">
           </div>
-          <snippet class="toggle-{{request.hasGet}}">
-{{request.get}}
+          <snippet class="toggle-{{`"{{"`}}request.hasGet{{`"}}"`}}">
+{{`"{{"`}}request.get{{`"}}"`}}
           </snippet>
         </div>
 
         <!-- POST -->
-        <div ng-show="{{request.hasPost}}">
+        <div ng-show="{{`"{{"`}}request.hasPost{{`"}}"`}}">
           <div class="method post glyphicon glyphicon-cloud-upload">
             POST
             <input type="checkbox" ng-model="request.hasPost">
           </div>
-          <snippet class="toggle-{{request.hasPost}}">
-{{request.post}}
+          <snippet class="toggle-{{`"{{"`}}request.hasPost{{`"}}"`}}">
+{{`"{{"`}}request.post{{`"}}"`}}
           </snippet>
         </div>
 
         <!-- Files -->
-        <div ng-show="{{request.hasFiles}}">
+        <div ng-show="{{`"{{"`}}request.hasFiles{{`"}}"`}}">
           <div class="method post glyphicon glyphicon-paperclip">
             Files
             <input type="checkbox" ng-model="request.hasFiles">
           </div>
-          <snippet class="toggle-{{request.hasFiles}}">
-{{request.files}}
+          <snippet class="toggle-{{`"{{"`}}request.hasFiles{{`"}}"`}}">
+{{`"{{"`}}request.files{{`"}}"`}}
           </snippet>
         </div>
 
         <!-- New User Watching -->
-        <div ng-show="{{!request.hasData}}">
+        <div ng-show="{{`"{{"`}}!request.hasData{{`"}}"`}}">
             <p>
                 <strong class="text-success">New Subscriber watching this Webhook!</strong>
             </p>
@@ -132,11 +135,10 @@
 
 
 
-{% endraw %}
 
 
   </div>
 
 </div>
   
-{% endblock %}
+{{end}}

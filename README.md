@@ -14,3 +14,13 @@ and then in the command line try sending a request over a la:
 
     curl -X POST http://webhookr.com/2c93b147-6431-45ec-9672-b3a522881185 -d 'SomeParam=1&B=hi' -H "X-Special-Header: test"
 
+## Installation
+
+### From Source
+
+	git clone git@github.com:mattwilliamson/webhookr.git
+	cd webhookr
+	export GOPATH="$(pwd):$GOPATH"
+	go get github.com/gorilla/websocket
+    go install github.com/mattwilliamson/webhookr
+    ./bin/webhookr
